@@ -8,35 +8,35 @@ class App extends Component {
 constructor(props){
   super(props)
   this.state= {}
-  console.log("super");
-
-
-
-  this.searchMethod()
+  this.searchMethod();
 }
 
-searchMethod() {
-  const urlString = "https://api.themoviedb.org/3/search/movie?query=bond&api_key=03941088d290e31d7ce308f7347fb41f"
+searchMethod(title) {
+  const urlString = "https://api.themoviedb.org/3/search/movie?api_key=03941088d290e31d7ce308f7347fb41f&query=" + title;
 $.ajax({
   url: urlString,
   success: (searchResults) => {
-    console.log("Fetched data successfully")
+    console.log("Fetched data successfully");
     const results = searchResults.results;
-
     var movieDivs = [];
-
     results.forEach((movie) => {
       movie.poster_src = "https://image.tmdb.org/t/p/w185" + movie.poster_path;
-      const movieDiv = <MovieDiv movie={movie}/>
-      movieDivs.push(movieDiv)
+      const movieDiv = <MovieDiv movie={movie}/>;
+      movieDivs.push(movieDiv);
     })
 
     this.setState({divs: movieDivs})
   },
   error: (xhr, status, err) => {
-    console.error("Failure to fetch data")
+    console.error("Failure to fetch data");
   }
 })
+}
+
+searchMovie(){
+  const boundObject = this;
+  const searchTerm = document.getElementById("input").value;
+  boundObject.searchMethod(searchTerm);
 }
 
 render() {
@@ -54,16 +54,13 @@ render() {
           </div>
         </div>
       </div>
-      <div className="input-group mb-3" id="input">
-        <input type="text" className="form-control" placeholder="Tytuł filmu" aria-label="Tytuł filmu" aria-describedby="basic-addon2"></input>
+      <div className="input-group mb-3">
+        <input type="text" className="form-control" id="input" placeholder="Tytuł filmu" aria-label="Tytuł filmu" aria-describedby="basic-addon2"></input>
           <div className="input-group-append">
-              <button className="btn btn-outline-secondary" type="button">Szukaj</button>
+              <button className="btn btn-outline-secondary" onClick={this.searchMovie.bind(this)} type="button">Szukaj</button>
           </div>
       </div>
-
     {this.state.divs}
-
-
     </div>
   );}
 }
